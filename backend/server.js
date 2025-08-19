@@ -1,0 +1,13 @@
+const express = require('express')
+const cors = require('cors')
+const path = require('path')
+const { ensureDataFile } = require('./config/db')
+const shoppingRoutes = require('./routes/shoppingRoutes')
+const app = express()
+const PORT = process.env.PORT || 5000
+app.use(cors())
+app.use(express.json())
+app.use('/api/lists', shoppingRoutes)
+app.use(express.static(path.join(__dirname, '../frontend')))
+ensureDataFile()
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
