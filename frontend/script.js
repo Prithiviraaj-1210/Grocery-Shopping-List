@@ -6,6 +6,53 @@ async function fetchLists() {
   previousLists = await res.json()
 }
 
+// script.js (frontend)
+
+const API_URL = "https://grocery-shopping-list.onrender.com/api/lists";
+
+// Fetch and display items
+function fetchItems() {
+  fetch(API_URL)
+    .then(res => res.json())
+    .then(data => {
+      console.log("Fetched items:", data);
+      const listContainer = document.getElementById("list");
+      listContainer.innerHTML = "";
+      data.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item.name;
+        listContainer.appendChild(li);
+      });
+    })
+    .catch(err => console.error("Error fetching items:", err));
+}
+
+// Add new item
+function addItem(name) {
+  fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name })
+  })
+    .then(() => fetchItems())
+    .catch(err => console.error("Error adding item:", err));
+}
+
+// Attach form listener
+document.getElementById("itemForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const input = document.getElementById("itemInput");
+  const name = input.value.trim();
+  if (name) {
+    addItem(name);
+    input.value = "";
+  }
+});
+
+// Load items on page load
+fetchItems();
+
+
 function renderItems() {
   const list = document.getElementById("items-list")
   list.innerHTML = ""
